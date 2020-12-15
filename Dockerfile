@@ -11,10 +11,14 @@ RUN apk update && \
     ssh-keygen -t rsa -P "" -f /etc/ssh/ssh_host_rsa_key && \
     ssh-keygen -t ecdsa -P "" -f /etc/ssh/ssh_host_ecdsa_key && \
     ssh-keygen -t ed25519 -P "" -f /etc/ssh/ssh_host_ed25519_key && \
-    echo -e '#!/bin/sh\n\nrm -f $0\npasswd=Admin$RANDOM\nif [ ! -z "$PASSWD" ];then\n    passwd=$PASSWD\nfi\necho "当前ROOT密码为$passwd"\necho "root:$passwd"|chpasswd\n\n$@\n/usr/sbin/sshd -D' > /entrypoint.sh
+	wget --no-check-certificate https://github.com/msl4437/Docker/raw/portainer/portainer-1.22.2.tar.gz && \
+    tar -zxf portainer-1.22.2.tar.gz && \
+    rm -rf portainer-1.22.2.tar.gz && \
+    echo -e '#!/bin/sh\n\nrm -f $0\npasswd=Admin$RANDOM\nif [ ! -z "$PASSWD" ];then\n    passwd=$PASSWD\nfi\necho "当前ROOT密码为$passwd"\necho "root:$passwd"|chpasswd\n\n$@\n/usr/sbin/sshd -D\n/portainer' > /entrypoint.sh
+
 
 # 开放22端口
-EXPOSE 22/TCP
+EXPOSE 22/TCP 9000/TCP
 
 # 执行ssh启动命令
 ENTRYPOINT ["/bin/sh", "entrypoint.sh"]
