@@ -11,12 +11,11 @@ RUN apk update && \
     ssh-keygen -t rsa -P "" -f /etc/ssh/ssh_host_rsa_key && \
     ssh-keygen -t ecdsa -P "" -f /etc/ssh/ssh_host_ecdsa_key && \
     ssh-keygen -t ed25519 -P "" -f /etc/ssh/ssh_host_ed25519_key && \
-    echo -e '#!/bin/sh\nrm -f $0\npasswd=Admin$RANDOM\nif [ ! -z "$PASSWD" ];then\n    passwd=$PASSWD\nfi\necho "当前ROOT密码为$passwd"\necho "root:$passwd"|chpasswd\n\nmysqladmin -u root password "$passwd"\nmysql -u root -p$passwd -e"GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$passwd' WITH GRANT OPTION;"\nmysql -u root -p$passwd -e"FLUSH PRIVILEGES;"\n\n$@\n/usr/sbin/sshd -D' > entrypoint.sh && \
+    echo -e '#!/bin/sh\nrm -f $0\npasswd=Admin$RANDOM\nif [ ! -z "$PASSWD" ];then\n    passwd=$PASSWD\nfi\necho "当前ROOT密码为$passwd"\necho "root:$passwd"|chpasswd\n\nmysqld_safe --nowatch --datadir=/var/lib/mysql &\nmysqladmin -u root password "$passwd"\nmysql -u root -p$passwd -e"GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$passwd' WITH GRANT OPTION;"\nmysql -u root -p$passwd -e"FLUSH PRIVILEGES;"\n\n$@\n/usr/sbin/sshd -D' > entrypoint.sh && \
     
     apk add mysql mysql-client && \
     sed -i "s/skip-networking/user=mysql/g" /etc/my.cnf.d/mariadb-server.cnf && \
-    mysql_install_db --datadir=/home/mysql && \
-    mysqld_safe --nowatch --datadir=/var/lib/mysql
+    mysql_install_db --datadir=/home/mysql
 
 # 开放22端口
 EXPOSE 22/TCP 3306/TCP
