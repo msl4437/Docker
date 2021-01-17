@@ -11,7 +11,7 @@ RUN apk update && \
     ssh-keygen -t rsa -P "" -f /etc/ssh/ssh_host_rsa_key && \
     ssh-keygen -t ecdsa -P "" -f /etc/ssh/ssh_host_ecdsa_key && \
     ssh-keygen -t ed25519 -P "" -f /etc/ssh/ssh_host_ed25519_key && \
-	wget --no-check-certificate https://github.com/msl4437/Docker/raw/mysql/entrypoint.sh && \
+    wget --no-check-certificate https://github.com/msl4437/Docker/raw/mysql/entrypoint.sh && \
     
     apk add mysql mysql-client && \
     sed -i "s/skip-networking/user=mysql/g" /etc/my.cnf.d/mariadb-server.cnf && \
