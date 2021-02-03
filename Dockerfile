@@ -18,7 +18,8 @@ RUN apk update && \
     wget --no-check-certificate https://github.com/caddyserver/caddy/releases/download/v$VERSION/caddy_$VERSION_linux_amd64.tar.gz && \
     tar -zxf caddy_$VERSION_linux_amd64.tar.gz && \
     mv caddy /usr/local/bin/caddy && \
-    chmod +x /usr/local/bin/caddy
+    chmod +x /usr/local/bin/caddy && \
+    rm -f caddy_$VERSION_linux_amd64.tar.gz LICENSE README.md
 # 开放22端口
 EXPOSE 22/TCP 80/TCP 443/TCP
 
