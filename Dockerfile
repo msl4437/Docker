@@ -15,11 +15,11 @@ RUN apk update && \
     ssh-keygen -t ecdsa -P "" -f /etc/ssh/ssh_host_ecdsa_key && \
     ssh-keygen -t ed25519 -P "" -f /etc/ssh/ssh_host_ed25519_key && \
     echo -e '#!/bin/sh\n\nrm -f $0\npasswd=Admin$RANDOM\nif [ ! -z "$PASSWD" ];then\n    passwd=$PASSWD\nfi\necho "当前ROOT密码为$passwd"\necho "root:$passwd"|chpasswd\n\nif [ -z "$domain" ];then\n    echo "domain变量不存在"\n    exit\nelse\n    echo "当前域名为$domain"\n    caddy reverse-proxy --from $domain --to 127.0.0.1:5000 &\nfi\n\n$@\n/usr/sbin/sshd -D' > /entrypoint.sh && \
-    wget --no-check-certificate https://github.com/caddyserver/caddy/releases/download/v$VERSION/caddy_$VERSION_linux_amd64.tar.gz && \
-    tar -zxf caddy_$VERSION_linux_amd64.tar.gz && \
+    wget --no-check-certificate https://github.com/caddyserver/caddy/releases/download/v"$VERSION"/caddy_"$VERSION"_linux_amd64.tar.gz && \
+    tar -zxf caddy_"$VERSION"_linux_amd64.tar.gz && \
     mv caddy /usr/local/bin/caddy && \
     chmod +x /usr/local/bin/caddy && \
-    rm -f caddy_$VERSION_linux_amd64.tar.gz LICENSE README.md
+    rm -f caddy_"$VERSION"_linux_amd64.tar.gz LICENSE README.md
 # 开放22端口
 EXPOSE 22/TCP 80/TCP 443/TCP
 
